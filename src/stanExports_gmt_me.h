@@ -35,9 +35,9 @@ stan::io::program_reader prog_reader__() {
     reader.add_event(0, 0, "start", "model_gmt_me");
     reader.add_event(2, 2, "include", "/functions/normal_int_censored_likelihood.stan");
     reader.add_event(2, 0, "start", "/functions/normal_int_censored_likelihood.stan");
-    reader.add_event(37, 35, "end", "/functions/normal_int_censored_likelihood.stan");
-    reader.add_event(37, 3, "restart", "model_gmt_me");
-    reader.add_event(88, 52, "end", "model_gmt_me");
+    reader.add_event(41, 39, "end", "/functions/normal_int_censored_likelihood.stan");
+    reader.add_event(41, 3, "restart", "model_gmt_me");
+    reader.add_event(92, 52, "end", "model_gmt_me");
     return reader;
 }
 template <typename T0__, typename T1__, typename T2__, typename T3__>
@@ -60,22 +60,24 @@ normal_int_censored_likelihood(const T0__& lower_lim,
         (void) result;  // dummy to suppress unused var warning
         stan::math::initialize(result, DUMMY_VAR__);
         stan::math::fill(result, DUMMY_VAR__);
-        stan::math::assign(result,0);
         current_statement_begin__ = 8;
-        if (as_bool(logical_eq(lower_lim, upper_lim))) {
+        if (as_bool((primitive_value(is_inf(lower_lim)) && primitive_value(is_inf(upper_lim))))) {
             current_statement_begin__ = 10;
-            stan::math::assign(result, (result + normal_log(lower_lim, mu, sigma)));
+            stan::math::assign(result, 0);
+        } else if (as_bool(logical_eq(lower_lim, upper_lim))) {
+            current_statement_begin__ = 14;
+            stan::math::assign(result, normal_log(lower_lim, mu, sigma));
         } else if (as_bool((primitive_value(logical_negation(is_inf(lower_lim))) && primitive_value(logical_negation(is_inf(upper_lim)))))) {
-            current_statement_begin__ = 16;
-            stan::math::assign(result, (result + log_diff_exp(normal_cdf_log(upper_lim, mu, sigma), normal_cdf_log(lower_lim, mu, sigma))));
+            current_statement_begin__ = 20;
+            stan::math::assign(result, log_diff_exp(normal_cdf_log(upper_lim, mu, sigma), normal_cdf_log(lower_lim, mu, sigma)));
         } else if (as_bool((primitive_value(logical_negation(is_inf(lower_lim))) && primitive_value(is_inf(upper_lim))))) {
-            current_statement_begin__ = 23;
-            stan::math::assign(result, (result + normal_ccdf_log(lower_lim, mu, sigma)));
+            current_statement_begin__ = 27;
+            stan::math::assign(result, normal_ccdf_log(lower_lim, mu, sigma));
         } else if (as_bool((primitive_value(is_inf(lower_lim)) && primitive_value(logical_negation(is_inf(upper_lim)))))) {
-            current_statement_begin__ = 29;
-            stan::math::assign(result, (result + normal_cdf_log(upper_lim, mu, sigma)));
+            current_statement_begin__ = 33;
+            stan::math::assign(result, normal_cdf_log(upper_lim, mu, sigma));
         }
-        current_statement_begin__ = 35;
+        current_statement_begin__ = 39;
         return stan::math::promote_scalar<fun_return_scalar_t__>(result);
         }
     } catch (const std::exception& e) {
@@ -141,28 +143,28 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
         try {
             // initialize data block variables from context__
-            current_statement_begin__ = 41;
+            current_statement_begin__ = 45;
             context__.validate_dims("data initialization", "N", "int", context__.to_vec());
             N = int(0);
             vals_i__ = context__.vals_i("N");
             pos__ = 0;
             N = vals_i__[pos__++];
             check_greater_or_equal(function__, "N", N, 1);
-            current_statement_begin__ = 42;
+            current_statement_begin__ = 46;
             context__.validate_dims("data initialization", "N_ags", "int", context__.to_vec());
             N_ags = int(0);
             vals_i__ = context__.vals_i("N_ags");
             pos__ = 0;
             N_ags = vals_i__[pos__++];
             check_greater_or_equal(function__, "N_ags", N_ags, 1);
-            current_statement_begin__ = 43;
+            current_statement_begin__ = 47;
             context__.validate_dims("data initialization", "N_srs", "int", context__.to_vec());
             N_srs = int(0);
             vals_i__ = context__.vals_i("N_srs");
             pos__ = 0;
             N_srs = vals_i__[pos__++];
             check_greater_or_equal(function__, "N_srs", N_srs, 1);
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 48;
             validate_non_negative_index("upper_lims", "N", N);
             context__.validate_dims("data initialization", "upper_lims", "vector_d", context__.to_vec(N));
             upper_lims = Eigen::Matrix<double, Eigen::Dynamic, 1>(N);
@@ -172,7 +174,7 @@ public:
             for (size_t j_1__ = 0; j_1__ < upper_lims_j_1_max__; ++j_1__) {
                 upper_lims(j_1__) = vals_r__[pos__++];
             }
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 49;
             validate_non_negative_index("lower_lims", "N", N);
             context__.validate_dims("data initialization", "lower_lims", "vector_d", context__.to_vec(N));
             lower_lims = Eigen::Matrix<double, Eigen::Dynamic, 1>(N);
@@ -182,7 +184,7 @@ public:
             for (size_t j_1__ = 0; j_1__ < lower_lims_j_1_max__; ++j_1__) {
                 lower_lims(j_1__) = vals_r__[pos__++];
             }
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 50;
             validate_non_negative_index("ag", "N", N);
             context__.validate_dims("data initialization", "ag", "int", context__.to_vec(N));
             ag = std::vector<int>(N, int(0));
@@ -192,7 +194,7 @@ public:
             for (size_t k_0__ = 0; k_0__ < ag_k_0_max__; ++k_0__) {
                 ag[k_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 47;
+            current_statement_begin__ = 51;
             validate_non_negative_index("sr", "N", N);
             context__.validate_dims("data initialization", "sr", "int", context__.to_vec(N));
             sr = std::vector<int>(N, int(0));
@@ -202,37 +204,37 @@ public:
             for (size_t k_0__ = 0; k_0__ < sr_k_0_max__; ++k_0__) {
                 sr[k_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 48;
+            current_statement_begin__ = 52;
             context__.validate_dims("data initialization", "mu_prior_mu", "double", context__.to_vec());
             mu_prior_mu = double(0);
             vals_r__ = context__.vals_r("mu_prior_mu");
             pos__ = 0;
             mu_prior_mu = vals_r__[pos__++];
-            current_statement_begin__ = 49;
+            current_statement_begin__ = 53;
             context__.validate_dims("data initialization", "mu_prior_sigma", "double", context__.to_vec());
             mu_prior_sigma = double(0);
             vals_r__ = context__.vals_r("mu_prior_sigma");
             pos__ = 0;
             mu_prior_sigma = vals_r__[pos__++];
-            current_statement_begin__ = 50;
+            current_statement_begin__ = 54;
             context__.validate_dims("data initialization", "sigma_prior_alpha", "double", context__.to_vec());
             sigma_prior_alpha = double(0);
             vals_r__ = context__.vals_r("sigma_prior_alpha");
             pos__ = 0;
             sigma_prior_alpha = vals_r__[pos__++];
-            current_statement_begin__ = 51;
+            current_statement_begin__ = 55;
             context__.validate_dims("data initialization", "sigma_prior_beta", "double", context__.to_vec());
             sigma_prior_beta = double(0);
             vals_r__ = context__.vals_r("sigma_prior_beta");
             pos__ = 0;
             sigma_prior_beta = vals_r__[pos__++];
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 56;
             context__.validate_dims("data initialization", "sigma_prior_ag_effect", "double", context__.to_vec());
             sigma_prior_ag_effect = double(0);
             vals_r__ = context__.vals_r("sigma_prior_ag_effect");
             pos__ = 0;
             sigma_prior_ag_effect = vals_r__[pos__++];
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 57;
             context__.validate_dims("data initialization", "sigma_prior_sr_effect", "double", context__.to_vec());
             sigma_prior_sr_effect = double(0);
             vals_r__ = context__.vals_r("sigma_prior_sr_effect");
@@ -244,14 +246,14 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 57;
+            current_statement_begin__ = 61;
             num_params_r__ += 1;
-            current_statement_begin__ = 58;
+            current_statement_begin__ = 62;
             num_params_r__ += 1;
-            current_statement_begin__ = 59;
+            current_statement_begin__ = 63;
             validate_non_negative_index("ag_effects", "N_ags", N_ags);
             num_params_r__ += N_ags;
-            current_statement_begin__ = 60;
+            current_statement_begin__ = 64;
             validate_non_negative_index("sr_effects", "N_srs", N_srs);
             num_params_r__ += N_srs;
         } catch (const std::exception& e) {
@@ -271,7 +273,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 57;
+        current_statement_begin__ = 61;
         if (!(context__.contains_r("mu")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable mu missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("mu");
@@ -284,7 +286,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable mu: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 58;
+        current_statement_begin__ = 62;
         if (!(context__.contains_r("sigma")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable sigma missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("sigma");
@@ -297,7 +299,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable sigma: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 59;
+        current_statement_begin__ = 63;
         if (!(context__.contains_r("ag_effects")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable ag_effects missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("ag_effects");
@@ -314,7 +316,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable ag_effects: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 60;
+        current_statement_begin__ = 64;
         if (!(context__.contains_r("sr_effects")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable sr_effects missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("sr_effects");
@@ -356,28 +358,28 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 57;
+            current_statement_begin__ = 61;
             local_scalar_t__ mu;
             (void) mu;  // dummy to suppress unused var warning
             if (jacobian__)
                 mu = in__.scalar_constrain(lp__);
             else
                 mu = in__.scalar_constrain();
-            current_statement_begin__ = 58;
+            current_statement_begin__ = 62;
             local_scalar_t__ sigma;
             (void) sigma;  // dummy to suppress unused var warning
             if (jacobian__)
                 sigma = in__.scalar_lb_constrain(0, lp__);
             else
                 sigma = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 59;
+            current_statement_begin__ = 63;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> ag_effects;
             (void) ag_effects;  // dummy to suppress unused var warning
             if (jacobian__)
                 ag_effects = in__.vector_constrain(N_ags, lp__);
             else
                 ag_effects = in__.vector_constrain(N_ags);
-            current_statement_begin__ = 60;
+            current_statement_begin__ = 64;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> sr_effects;
             (void) sr_effects;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -385,24 +387,24 @@ public:
             else
                 sr_effects = in__.vector_constrain(N_srs);
             // model body
-            current_statement_begin__ = 66;
+            current_statement_begin__ = 70;
             lp_accum__.add(normal_log<propto__>(mu, mu_prior_mu, mu_prior_sigma));
-            current_statement_begin__ = 67;
+            current_statement_begin__ = 71;
             lp_accum__.add(inv_gamma_log<propto__>(sigma, sigma_prior_alpha, sigma_prior_beta));
-            current_statement_begin__ = 68;
-            lp_accum__.add(normal_log<propto__>(ag_effects, 0, sigma_prior_ag_effect));
-            current_statement_begin__ = 69;
-            lp_accum__.add(normal_log<propto__>(sr_effects, 0, sigma_prior_sr_effect));
             current_statement_begin__ = 72;
+            lp_accum__.add(normal_log<propto__>(ag_effects, 0, sigma_prior_ag_effect));
+            current_statement_begin__ = 73;
+            lp_accum__.add(normal_log<propto__>(sr_effects, 0, sigma_prior_sr_effect));
+            current_statement_begin__ = 76;
             for (int i = 1; i <= N; ++i) {
                 {
-                current_statement_begin__ = 75;
+                current_statement_begin__ = 79;
                 local_scalar_t__ logtiter(DUMMY_VAR__);
                 (void) logtiter;  // dummy to suppress unused var warning
                 stan::math::initialize(logtiter, DUMMY_VAR__);
                 stan::math::fill(logtiter, DUMMY_VAR__);
                 stan::math::assign(logtiter,((mu + get_base1(ag_effects, get_base1(ag, i, "ag", 1), "ag_effects", 1)) + get_base1(sr_effects, get_base1(sr, i, "sr", 1), "sr_effects", 1)));
-                current_statement_begin__ = 78;
+                current_statement_begin__ = 82;
                 lp_accum__.add(normal_int_censored_likelihood(get_base1(lower_lims, i, "lower_lims", 1), get_base1(upper_lims, i, "upper_lims", 1), logtiter, sigma, pstream__));
                 }
             }
