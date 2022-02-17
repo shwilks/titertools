@@ -51,7 +51,7 @@ foldchange <- function(
   # Set initial conditions
   initdata <- list(
     mu = mean(titerdifflims$logtiter_diffs),
-    sigma = sd(titerdifflims$logtiter_diffs)
+    sigma = pmax(sd(titerdifflims$logtiter_diffs), 0.1)
   )
 
   # Optimize parameters
@@ -65,6 +65,7 @@ foldchange <- function(
   # Calculate output
   calc_confint(
     result = result,
+    standata = standata,
     model = stanmodels$gmt,
     pars = names(result$par),
     method = ci_method,
@@ -148,6 +149,7 @@ foldchange_me <- function(
 
   calc_confint(
     result = result,
+    standata = standata,
     model = stanmodels$gmt_me,
     pars = names(result$par),
     method = ci_method,
