@@ -1,6 +1,7 @@
 
 calc_confint <- function(
   result,
+  standata,
   model,
   pars,
   method = "quap",
@@ -35,7 +36,7 @@ calc_confint <- function(
     result_sampling <- rstan::sampling(
       model,
       data = standata,
-      init = list(initdata),
+      init = list(as.list(result$par)),
       chains = 1,
       refresh = 0,
       iter = options$iter,
