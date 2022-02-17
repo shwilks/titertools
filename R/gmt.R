@@ -57,6 +57,7 @@ gmt <- function(
 
   calc_confint(
     result = result,
+    standata = standata,
     model = stanmodels$gmt,
     pars = names(result$par),
     method = ci_method,
@@ -107,13 +108,12 @@ gmt_me <- function(
   # Set initial conditions
   initdata <- list(
     mu         = mean(titerlims$log_titers[!na_titers]),
-    sigma      = sd(titerlims$log_titers[!na_titers]),
+    sigma      = pmax(sd(titerlims$log_titers[!na_titers]), 0.1),
     ag_effects = rep(0, ncol(titers)),
     sr_effects = rep(0, nrow(titers))
   )
 
   # Optimize parameters
-  browser()
   result <- rstan::optimizing(
     stanmodels$gmt_me,
     data = standata,
@@ -123,6 +123,7 @@ gmt_me <- function(
 
   calc_confint(
     result = result,
+    standata = standata,
     model = stanmodels$gmt_me,
     pars = names(result$par),
     method = ci_method,
