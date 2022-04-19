@@ -46,7 +46,7 @@ calc_confint <- function(
     ci_output <- do.call(
       rbind,
       lapply(pars, function(par) {
-        par_sample <- rstan::extract(result_sampling)[[par]]
+        par_sample <- rstan::extract(result_sampling, pars = par)[[1]]
         par_ci <- bayestestR::ci(par_sample, ci = level, method = method)
         c(result$par[par], par_ci$CI_low, par_ci$CI_high)
       })

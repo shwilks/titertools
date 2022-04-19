@@ -4,10 +4,19 @@ library(Racmacs)
 # rstantools::rstan_config(); pkgbuild::compile_dll(); devtools::load_all();
 map <- read.acmap("~/Dropbox/labbook/publications/in review/duke-sars2-cartography-paper/data/map_ndsubset_no_outliers.ace")
 titers <- t(titerTable(map)[c("B.1.351", "P.1"), srGroups(map) == "D614G"])
-titers1 <- t(titerTable(map)[c("D614G", "B.1.1.7"), srGroups(map) == "D614G"])
-titers2 <- t(titerTable(map)[c("B.1.351"), srGroups(map) == "D614G"])
+titers1 <- t(titerTable(map)[c("D614G", "B.1.1.7"), srGroups(map) == "D614G", drop = F])
+titers2 <- t(titerTable(map)[c("B.1.351", "P.1"), srGroups(map) == "D614G", drop = F])
 
-result <- gmt(titers1[,1], ci_method = "ETI")
+gmt("*")
+gmt(c("40", "*"))
+gmt(c("<10", "<10", "<10"))
+
+titers_na <- titers1
+titers_na[] <- "*"
+gmt_me(titers_na)
+
+# result <- gmt(titers1[,1], ci_method = "ETI")
+result <- log2diff_unpaired_me(titers1, titers2, ci_method = "ETI")
 
 # gmt_me_interp_logtiters <- function(result, titers) {
 #

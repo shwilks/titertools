@@ -16,14 +16,25 @@ gmt <- function(
 
   # Remove na titers
   titers <- titers[!is_na_titer(titers)]
+  if (length(titers) == 0) {
+    return(
+      matrix(
+        NA_real_, 2, 3,
+        dimnames = list(
+          c("mean", "sd"),
+          c("estimate", "lower", "upper")
+        )
+      )
+    )
+  }
 
   # Calculate titer limits
   titerlims <- calc_titer_lims(titers, 0)
 
   # Setup data
   standata <- list(
-    upper_lims = titerlims$max_titers,
-    lower_lims = titerlims$min_titers,
+    upper_lims = as.array(titerlims$max_titers),
+    lower_lims = as.array(titerlims$min_titers),
     N = length(titers),
     mu_prior_mu = 0,
     mu_prior_sigma = 100,
@@ -34,7 +45,7 @@ gmt <- function(
   # Set initial conditions
   initdata <- list(
     mu = mean(titerlims$log_titers),
-    sigma = sd(titerlims$log_titers)
+    sigma = pmax(sd(titerlims$log_titers), 0.1, na.rm = T)
   )
 
   # Optimize parameters
@@ -88,15 +99,27 @@ gmt_me <- function(
   na_titers <- is_na_titer(titers)
   titerlims <- calc_titer_lims(titers, 0)
 
+  if (sum(!na_titers) == 0) {
+    return(
+      matrix(
+        NA_real_, 2 + ncol(titers) + nrow(titers), 3,
+        dimnames = list(
+          c("mean", "sd", sprintf("ag_effects[%s]", seq_len(ncol(titers))), sprintf("sr_effects[%s]", seq_len(nrow(titers)))),
+          c("estimate", "lower", "upper")
+        )
+      )
+    )
+  }
+
   # Setup data
   standata <- list(
     N                     = sum(!na_titers),
     N_ags                 = ncol(titers),
     N_srs                 = nrow(titers),
-    upper_lims            = titerlims$max_titers[!na_titers],
-    lower_lims            = titerlims$min_titers[!na_titers],
-    ag                    = as.vector(ag_num)[!na_titers],
-    sr                    = as.vector(sr_num)[!na_titers],
+    upper_lims            = as.array(titerlims$max_titers[!na_titers]),
+    lower_lims            = as.array(titerlims$min_titers[!na_titers]),
+    ag                    = as.array(as.vector(ag_num)[!na_titers]),
+    sr                    = as.array(as.vector(sr_num)[!na_titers]),
     mu_prior_mu           = 0,
     mu_prior_sigma        = 100,
     sigma_prior_alpha     = 2,
@@ -108,9 +131,9 @@ gmt_me <- function(
   # Set initial conditions
   initdata <- list(
     mu         = mean(titerlims$log_titers[!na_titers]),
-    sigma      = pmax(sd(titerlims$log_titers[!na_titers]), 0.1),
-    ag_effects = rep(0, ncol(titers)),
-    sr_effects = rep(0, nrow(titers))
+    sigma      = pmax(sd(titerlims$log_titers[!na_titers]), 0.1, na.rm = T),
+    ag_effects = as.array(rep(0, ncol(titers))),
+    sr_effects = as.array(rep(0, nrow(titers)))
   )
 
   # Optimize parameters

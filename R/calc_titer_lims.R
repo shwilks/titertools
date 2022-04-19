@@ -93,10 +93,18 @@ calc_titer_lims <- function(
   min_titers[lessthan_titers] <- options$min_titer_possible
   max_titers[morethan_titers] <- options$max_titer_possible
 
+  # Create a vector indicating censoring
+  censoring <- rep("none", length(titers))
+  if (dilution_stepsize > 0) censoring[] <- "interval"
+  censoring[lessthan_titers] <- "left"
+  censoring[morethan_titers] <- "right"
+  censoring <- factor(censoring, levels = c("none", "left", "right", "interval", "full"))
+
   list(
     log_titers = log_titers,
     max_titers = max_titers,
-    min_titers = min_titers
+    min_titers = min_titers,
+    censoring  = censoring
   )
 
 }
@@ -110,7 +118,7 @@ calc_titer_diff_lims <- function(
 ) {
 
   # Get limits to titer measurements
-  titer1_lims  <- calc_titer_lims(titers1, dilution_stepsize, options)
+  titer1_lims <- calc_titer_lims(titers1, dilution_stepsize, options)
   titer2_lims <- calc_titer_lims(titers2, dilution_stepsize, options)
 
   # Compute maximum and mininmum differences
@@ -120,16 +128,35 @@ calc_titer_diff_lims <- function(
   logtiters1 <- titer1_lims$log_titers
   logtiters2 <- titer2_lims$log_titers
 
+  # Determine censoring
+  censoring <- rep("none", length(titers1))
+  censoring[titer1_lims$censoring == "none"     & titer2_lims$censoring == "none"]     <- "none"
+  censoring[titer1_lims$censoring == "none"     & titer2_lims$censoring == "interval"] <- "interval"
+  censoring[titer1_lims$censoring == "none"     & titer2_lims$censoring == "right"]    <- "right"
+  censoring[titer1_lims$censoring == "none"     & titer2_lims$censoring == "left"]     <- "left"
+  censoring[titer1_lims$censoring == "interval" & titer2_lims$censoring == "none"]     <- "none"
+  censoring[titer1_lims$censoring == "interval" & titer2_lims$censoring == "interval"] <- "interval"
+  censoring[titer1_lims$censoring == "interval" & titer2_lims$censoring == "right"]    <- "right"
+  censoring[titer1_lims$censoring == "interval" & titer2_lims$censoring == "left"]     <- "left"
+  censoring[titer1_lims$censoring == "left"     & titer2_lims$censoring == "none"]     <- "right"
+  censoring[titer1_lims$censoring == "left"     & titer2_lims$censoring == "interval"] <- "right"
+  censoring[titer1_lims$censoring == "left"     & titer2_lims$censoring == "left"]     <- "full"
+  censoring[titer1_lims$censoring == "left"     & titer2_lims$censoring == "right"]    <- "right"
+  censoring[titer1_lims$censoring == "right"    & titer2_lims$censoring == "none"]     <- "left"
+  censoring[titer1_lims$censoring == "right"    & titer2_lims$censoring == "interval"] <- "left"
+  censoring[titer1_lims$censoring == "right"    & titer2_lims$censoring == "right"]    <- "full"
+  censoring[titer1_lims$censoring == "right"    & titer2_lims$censoring == "left"]     <- "left"
+  censoring <- factor(censoring, levels = c("none", "left", "right", "interval", "full"))
+
   # Return result
   list(
     max_diffs = max_diffs,
     min_diffs = min_diffs,
-    logtiter_diffs = logtiters2 - logtiters1
+    logtiter_diffs = logtiters2 - logtiters1,
+    censoring = censoring
   )
 
 }
-
-
 
 
 sampler_options <- function(
@@ -141,5 +168,13 @@ sampler_options <- function(
     iter = iter,
     warmup = warmup
   )
+
+}
+
+
+infer_dilution_stepsize <- function(titers) {
+
+  warning("Dilution stepsize inferred as 0, to suppress this message set dilution stepsize explicitly using the 'dilution_stepsize' argument")
+  return(0)
 
 }
