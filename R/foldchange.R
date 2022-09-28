@@ -9,6 +9,12 @@
 #' @param titers2 The second titerset to which to calculate the mean difference
 #' @param ci_method The method to use when calculating the confidence intervals
 #' @param ci_level The confidence level to use when calculating confidence intervals
+#' @param dilution_stepsize The dilution stepsize. Generally 1 for titers of
+#' the form '20', '40', '80', and 0 for titers that are read out continuously.
+#' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
+#' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
 #' @param options Options for the sampler
 #'
 #' @export
@@ -17,16 +23,17 @@ log2diff <- function(
   titers2,
   ci_method = "quap",
   ci_level = 0.95,
-  dilution_stepsize = NULL,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
   options = list()
   ) {
 
   # Check input
   if (!is.vector(titers1) || !is.vector(titers2) || length(titers1) != length(titers2)) {
     "Titers must be input as vectors of matching length"
-  }
-  if (is.null(dilution_stepsize)) {
-    dilution_stepsize <- infer_dilution_stepsize(c(titers1, titers2))
   }
 
   # Remove na titers
@@ -46,10 +53,10 @@ log2diff <- function(
     upper_lims = as.array(titerdifflims$max_diffs),
     lower_lims = as.array(titerdifflims$min_diffs),
     N = sum(!na_titers),
-    mu_prior_mu = 0,
-    mu_prior_sigma = 100,
-    sigma_prior_alpha = 2,
-    sigma_prior_beta = 5
+    mu_prior_mu = mu_prior_mu,
+    mu_prior_sigma = mu_prior_sigma,
+    sigma_prior_alpha = sigma_prior_alpha,
+    sigma_prior_beta = sigma_prior_beta
   )
 
   # Set initial conditions
@@ -86,16 +93,27 @@ log2diff <- function(
 }
 
 
-#' Calculate the mean difference between two paired sets of titers
+#' Calculate the mean difference between two paired sets of titers,
+#' where each set is a matrix of titers.
 #'
 #' This function is useful for example for calculating differences where you have a set of
 #' pre-vaccination and post-vaccination samples and you would like to know the mean response
-#' size, accounting for non-detectable values.
+#' size, accounting for non-detectable values. The calculations take into account
+#' antigen reactivity biases (ag_effect) and reactivity biases for individual
+#' sera (sr_effect).
 #'
 #' @param titers1 The first titerset from which to calculate the mean difference
 #' @param titers2 The second titerset to which to calculate the mean difference
 #' @param ci_method The method to use when calculating the confidence intervals
 #' @param ci_level The confidence level to use when calculating confidence intervals
+#' @param dilution_stepsize The dilution stepsize. Generally 1 for titers of
+#' the form '20', '40', '80', and 0 for titers that are read out continuously.
+#' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
+#' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_ag_effect Prior for the antigen effect
+#' @param sigma_prior_sr_effect Prior for the serum effect
 #' @param options Options for the sampler
 #'
 #' @export
@@ -104,6 +122,13 @@ log2diff_me <- function(
   titers2,
   ci_method = "quap",
   ci_level = 0.95,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
+  sigma_prior_ag_effect = 0.7,
+  sigma_prior_sr_effect = 2,
   options = list()
 ) {
 
@@ -121,7 +146,7 @@ log2diff_me <- function(
   titerdifflims <- calc_titer_diff_lims(
     titers1 = titers1,
     titers2 = titers2,
-    dilution_stepsize = 0
+    dilution_stepsize = dilution_stepsize
   )
 
   # Setup data
@@ -133,12 +158,12 @@ log2diff_me <- function(
     lower_lims            = as.array(titerdifflims$min_diffs[!na_titers]),
     ag                    = as.array(as.vector(ag_num))[!na_titers],
     sr                    = as.array(as.vector(sr_num))[!na_titers],
-    mu_prior_mu           = 0,
-    mu_prior_sigma        = 100,
-    sigma_prior_alpha     = 2,
-    sigma_prior_beta      = 5,
-    sigma_prior_ag_effect = 0.7,
-    sigma_prior_sr_effect = 2
+    mu_prior_mu           = mu_prior_mu,
+    mu_prior_sigma        = mu_prior_sigma,
+    sigma_prior_alpha     = sigma_prior_alpha,
+    sigma_prior_beta      = sigma_prior_beta,
+    sigma_prior_ag_effect = sigma_prior_ag_effect,
+    sigma_prior_sr_effect = sigma_prior_sr_effect
   )
 
   # Set initial conditions
@@ -170,16 +195,26 @@ log2diff_me <- function(
 }
 
 
-#' Calculate the mean difference between two paired sets of titers
+#' Calculate the mean difference between two unpaired matrices of titers
 #'
 #' This function is useful for example for calculating differences where you have a set of
 #' pre-vaccination and post-vaccination samples and you would like to know the mean response
-#' size, accounting for non-detectable values.
+#' size, accounting for non-detectable values. The calculations take into account
+#' antigen reactivity biases (ag_effect) and reactivity biases for individual
+#' sera (sr_effect).
 #'
 #' @param titers1 The first titerset from which to calculate the mean difference
 #' @param titers2 The second titerset to which to calculate the mean difference
 #' @param ci_method The method to use when calculating the confidence intervals
 #' @param ci_level The confidence level to use when calculating confidence intervals
+#' @param dilution_stepsize The dilution stepsize. Generally 1 for titers of
+#' the form '20', '40', '80', and 0 for titers that are read out continuously.
+#' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
+#' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_ag_effect Prior for the antigen effect
+#' @param sigma_prior_sr_effect Prior for the serum effect
 #' @param options Options for the sampler
 #'
 #' @export
@@ -188,6 +223,13 @@ log2diff_unpaired_me <- function(
   titers2,
   ci_method = "quap",
   ci_level = 0.95,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
+  sigma_prior_ag_effect = 0.7,
+  sigma_prior_sr_effect = 2,
   options = list()
 ) {
 
@@ -209,7 +251,7 @@ log2diff_unpaired_me <- function(
   # Calculate titer limits
   titerlims <- calc_titer_lims(
     titers = titers,
-    dilution_stepsize = 1
+    dilution_stepsize = dilution_stepsize
   )
 
   # Setup data
@@ -222,11 +264,12 @@ log2diff_unpaired_me <- function(
     ag                    = as.array(as.vector(ag_num)[!na_titers]),
     sr                    = as.array(as.vector(sr_num)[!na_titers]),
     ag12                  = as.array(as.vector(ag12)[!na_titers]),
-    ags1_mu_prior_mu      = 0,
-    ags1_mu_prior_sigma   = 100,
-    sigma_prior_alpha     = 2,
-    sigma_prior_beta      = 5,
-    sigma_prior_ag_effect = 0.7,
+    mu_prior_mu           = mu_prior_mu,
+    mu_prior_sigma        = mu_prior_sigma,
+    sigma_prior_alpha     = sigma_prior_alpha,
+    sigma_prior_beta      = sigma_prior_beta,
+    sigma_prior_ag_effect = sigma_prior_ag_effect,
+    sigma_prior_sr_effect = sigma_prior_sr_effect,
     sr_logdiffs_mu        = 0,
     sr_logdiffs_sigma     = 100
   )
