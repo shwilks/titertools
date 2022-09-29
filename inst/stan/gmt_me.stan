@@ -21,7 +21,7 @@ data {
 
 parameters {
   real mu;
-  real<lower=0> sigma;
+  real<lower=0.01> sigma;
   vector[N_ags] ag_effects;
   vector[N_srs] sr_effects;
 }
