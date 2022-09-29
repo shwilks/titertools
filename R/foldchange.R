@@ -15,7 +15,7 @@
 log2diff <- function(
   titers1,
   titers2,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
   dilution_stepsize = NULL,
   options = list()
@@ -33,6 +33,18 @@ log2diff <- function(
   na_titers <- is_na_titer(titers1) | is_na_titer(titers2)
   titers1 <- titers1[!na_titers]
   titers2 <- titers2[!na_titers]
+
+  if (length(titers1) == 0) {
+    return(
+      matrix(
+        NA_real_, 2, 3,
+        dimnames = list(
+          c("mean", "sd"),
+          c("estimate", "lower", "upper")
+        )
+      )
+    )
+  }
 
   # Calculate titer limits
   titerdifflims <- calc_titer_diff_lims(
@@ -102,7 +114,7 @@ log2diff <- function(
 log2diff_me <- function(
   titers1,
   titers2,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
   options = list()
 ) {
@@ -186,7 +198,7 @@ log2diff_me <- function(
 log2diff_unpaired_me <- function(
   titers1,
   titers2,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
   options = list()
 ) {
