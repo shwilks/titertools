@@ -161,7 +161,7 @@ calc_titer_diff_lims <- function(
 
 sampler_options <- function(
   iter = 10000,
-  warmup = 500
+  warmup = 2000
 ) {
 
   list(
