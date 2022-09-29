@@ -36,8 +36,8 @@ calc_confint <- function(
     result_sampling <- rstan::sampling(
       model,
       data = standata,
-      init = list(as.list(result$par)),
-      chains = 1,
+      # init = list(as.list(result$par)),
+      # chains = 1,
       refresh = 0,
       iter = options$iter,
       warmup = options$warmup
