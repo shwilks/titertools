@@ -9,7 +9,7 @@
 #' @export
 gmt <- function(
   titers,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
   options = list()
   ) {
@@ -89,7 +89,7 @@ gmt <- function(
 #' @export
 gmt_me <- function(
   titers,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
   options = list()
 ) {
