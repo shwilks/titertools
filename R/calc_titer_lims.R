@@ -1,7 +1,7 @@
 
 is_na_titer <- function(titers) {
 
-  titers == "*" | is.na(titers)
+  titers %in% c("*", ".") | is.na(titers)
 
 }
 
