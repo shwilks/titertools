@@ -15,7 +15,7 @@ data {
 
 parameters {
   real mu;
-  real<lower=0> sigma;
+  real<lower=0.01> sigma;
 }
 
 model {
