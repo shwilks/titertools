@@ -237,7 +237,7 @@ public:
         double sigma(0);
         sigma = vals_r__[pos__++];
         try {
-            writer__.scalar_lb_unconstrain(0, sigma);
+            writer__.scalar_lb_unconstrain(0.01, sigma);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable sigma: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -277,9 +277,9 @@ public:
             local_scalar_t__ sigma;
             (void) sigma;  // dummy to suppress unused var warning
             if (jacobian__)
-                sigma = in__.scalar_lb_constrain(0, lp__);
+                sigma = in__.scalar_lb_constrain(0.01, lp__);
             else
-                sigma = in__.scalar_lb_constrain(0);
+                sigma = in__.scalar_lb_constrain(0.01);
             // model body
             current_statement_begin__ = 62;
             lp_accum__.add(normal_log<propto__>(mu, mu_prior_mu, mu_prior_sigma));
@@ -337,7 +337,7 @@ public:
         // read-transform, write parameters
         double mu = in__.scalar_constrain();
         vars__.push_back(mu);
-        double sigma = in__.scalar_lb_constrain(0);
+        double sigma = in__.scalar_lb_constrain(0.01);
         vars__.push_back(sigma);
         double lp__ = 0.0;
         (void) lp__;  // dummy to suppress unused var warning
