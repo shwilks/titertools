@@ -1,1 +1,13 @@
+.Renviron
 .Rproj.user
+.Rhistory
+.RData
+.Rapp.history
+.DS_Store
+.clang-format
+*.sublime-project
+*.sublime-workspace
+*.o
+*.o.tmp
+*.code-workspace
+src/.vscode/*
