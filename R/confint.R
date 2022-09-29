@@ -4,7 +4,7 @@ calc_confint <- function(
   standata,
   model,
   pars,
-  method = "quap",
+  method = "HDI",
   level = 0.95,
   options = list()
 ) {
