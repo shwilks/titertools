@@ -1,4 +1,23 @@
 
+#' Calculate the confidence intervals
+#'
+#' @param result The result of the optimised model.
+#' @param standata The data passed to stan.
+#' @param model The stan model.
+#' @param pars The parameters that were optimised.
+#' @param method The method for calculating the confidence interval.
+#' One of 'quap', 'ETI', 'HDI', 'BCI', 'SI', see details.
+#' @param level The confidence level to use when calculating confidence intervals
+#' @param options Options for the sampler
+#'
+#' @details
+#' `quap`: Confidence interval is computed using quadratic approximation.
+#' For ETI, HDI, BCI and SI, the confidence interval is computed across samples from the posterior distribution.
+#' `ETI`: Equal-Tailed Interval. The probability of being below this interval is equal to the probability of being above it. A 95% ETI will always have 2.5% of the distribution on either side of its limits. See https://easystats.github.io/bayestestR/reference/eti.html
+#' `HDI`: Highest Density Interval. Not equal-tailed. See https://easystats.github.io/bayestestR/reference/hdi.html
+#' `BCI`: Bias Corrected and Accelerated Interval. See https://easystats.github.io/bayestestR/reference/bci.html
+#' `SI`: Support Interval. 'A support interval contains only the values of the parameter that predict the observed data better than average'. See https://easystats.github.io/bayestestR/reference/si.html
+#'
 calc_confint <- function(
   result,
   standata,
@@ -54,7 +73,7 @@ calc_confint <- function(
 
   } else {
 
-    stop("ci_type must be one of 'quap', 'ETI', 'HDI', 'BCI' or 'SI'")
+    stop("method must be one of 'quap', 'ETI', 'HDI', 'BCI' or 'SI'")
 
   }
 

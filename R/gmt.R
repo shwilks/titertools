@@ -1,9 +1,15 @@
 
-#' Calculate the geometric mean titer of a set of titers
+#' Calculate the geometric mean titer of a set of titers.
 #'
 #' @param titers A vector of titers
 #' @param ci_method The method to use when calculating the confidence intervals
 #' @param ci_level The confidence level to use when calculating confidence intervals
+#' @param dilution_stepsize The dilution stepsize. Generally 1 for titers of
+#' the form '20', '40', '80', and 0 for titers that are read out continuously.
+#' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
+#' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
 #' @param options Options for the sampler
 #'
 #' @export
@@ -11,6 +17,11 @@ gmt <- function(
   titers,
   ci_method = "HDI",
   ci_level = 0.95,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
   options = list()
   ) {
 
@@ -29,17 +40,17 @@ gmt <- function(
   }
 
   # Calculate titer limits
-  titerlims <- calc_titer_lims(titers, 0)
+  titerlims <- calc_titer_lims(titers, dilution_stepsize)
 
   # Setup data
   standata <- list(
     upper_lims = as.array(titerlims$max_titers),
     lower_lims = as.array(titerlims$min_titers),
     N = length(titers),
-    mu_prior_mu = 0,
-    mu_prior_sigma = 100,
-    sigma_prior_alpha = 2,
-    sigma_prior_beta = 5
+    mu_prior_mu = mu_prior_mu,
+    mu_prior_sigma = mu_prior_sigma,
+    sigma_prior_alpha = sigma_prior_alpha,
+    sigma_prior_beta = sigma_prior_beta
   )
 
   # Set initial conditions
@@ -79,11 +90,21 @@ gmt <- function(
 }
 
 
-#' Calculate the geometric mean titer of a set of titers
+#' Calculate the geometric mean titer of a titertable, taking into account
+#' antigen reactivity biases (ag_effect) and reactivity biases for individual
+#' sera (sr_effect).
 #'
 #' @param titers A matrix of titers
 #' @param ci_method The method to use when calculating the confidence intervals
 #' @param ci_level The confidence level to use when calculating confidence intervals
+#' @param dilution_stepsize The dilution stepsize. Generally 1 for titers of
+#' the form '20', '40', '80', and 0 for titers that are read out continuously.
+#' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
+#' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
+#' @param sigma_prior_ag_effect Prior for the antigen effect
+#' @param sigma_prior_sr_effect Prior for the serum effect
 #' @param options Options for the sampler
 #'
 #' @export
@@ -91,13 +112,20 @@ gmt_me <- function(
   titers,
   ci_method = "HDI",
   ci_level = 0.95,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
+  sigma_prior_ag_effect = 0.7,
+  sigma_prior_sr_effect = 2,
   options = list()
 ) {
 
   ag_num <- matrix(seq_len(ncol(titers)), nrow(titers), ncol(titers), byrow = T)
   sr_num <- matrix(seq_len(nrow(titers)), nrow(titers), ncol(titers), byrow = F)
   na_titers <- is_na_titer(titers)
-  titerlims <- calc_titer_lims(titers, 0)
+  titerlims <- calc_titer_lims(titers, dilution_stepsize)
 
   if (sum(!na_titers) == 0) {
     return(
@@ -120,12 +148,12 @@ gmt_me <- function(
     lower_lims            = as.array(titerlims$min_titers[!na_titers]),
     ag                    = as.array(as.vector(ag_num)[!na_titers]),
     sr                    = as.array(as.vector(sr_num)[!na_titers]),
-    mu_prior_mu           = 0,
-    mu_prior_sigma        = 100,
-    sigma_prior_alpha     = 2,
-    sigma_prior_beta      = 5,
-    sigma_prior_ag_effect = 0.7,
-    sigma_prior_sr_effect = 2
+    mu_prior_mu           = mu_prior_mu,
+    mu_prior_sigma        = mu_prior_sigma,
+    sigma_prior_alpha     = sigma_prior_alpha,
+    sigma_prior_beta      = sigma_prior_beta,
+    sigma_prior_ag_effect = sigma_prior_ag_effect,
+    sigma_prior_sr_effect = sigma_prior_sr_effect
   )
 
   # Set initial conditions
