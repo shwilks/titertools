@@ -7,13 +7,13 @@ ntiters <- 1000
 dilution_stepsize <- 0
 
 titerintercept <- -4
-titerslope <- 1
+titerslope <- 1.5
 
-titer1error_sd <- 0.2
-titer2error_sd <- 0.2
+titer1error_sd <- 1
+titer2error_sd <- 1
 
-titer1threshold <- -20
-titer2threshold <- -20
+titer1threshold <- -1
+titer2threshold <- -1
 
 # Generate titers
 # titers1 <- runif(ntiters, min = -3, max = 12)
