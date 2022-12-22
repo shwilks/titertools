@@ -1,7 +1,9 @@
 
 #' The 'titertools' package.
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description Provides a set of functions for statistical analysis of censored
+#'   data, in particular data such as titration data where there is typically
+#'   a detection threshold such as <10 titers.
 #'
 #' @docType package
 #' @name titertools-package
