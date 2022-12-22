@@ -1,19 +1,17 @@
 Package: titertools
-Title: What the Package Does (One Line, Title Case)
+Title: A statistical toolkit for the annalysis of censored titration data
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Date: 2022-12-21
+Author: Sam Wilks
+Maintainer: Sam Wilks <sw463@cam.ac.uk>
+Description: Provides a set of functions for statistical analysis of censored 
+    data, in particular data such as titration data where there is typically 
+    a detection threshold such as <10 titers.
+License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2.9000
+RoxygenNote: 7.2.1
 Biarch: true
 Depends: 
     R (>= 3.4.0)
