@@ -18,6 +18,8 @@
 #' `BCI`: Bias Corrected and Accelerated Interval. See https://easystats.github.io/bayestestR/reference/bci.html
 #' `SI`: Support Interval. 'A support interval contains only the values of the parameter that predict the observed data better than average'. See https://easystats.github.io/bayestestR/reference/si.html
 #'
+#' @noRd
+#'
 calc_confint <- function(
   result,
   standata,
