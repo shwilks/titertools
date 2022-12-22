@@ -64,7 +64,8 @@ titer_fit_options <- function(
 #'   )
 #' )
 #'
-#' @export
+#' @noRd
+#'
 calc_titer_lims <- function(
   titers,
   dilution_stepsize,
