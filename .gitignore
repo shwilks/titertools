@@ -12,3 +12,4 @@
 *.o.tmp
 *.code-workspace
 src/.vscode/*
+docs
