@@ -37,7 +37,7 @@ stan::io::program_reader prog_reader__() {
     reader.add_event(2, 0, "start", "/functions/normal_int_censored_likelihood.stan");
     reader.add_event(41, 39, "end", "/functions/normal_int_censored_likelihood.stan");
     reader.add_event(41, 3, "restart", "model_lm");
-    reader.add_event(102, 62, "end", "model_lm");
+    reader.add_event(97, 57, "end", "model_lm");
     return reader;
 }
 template <typename T0__, typename T1__, typename T2__, typename T3__>
@@ -410,36 +410,20 @@ public:
             else
                 log2titers1 = in__.vector_constrain(N);
             // model body
-            {
             current_statement_begin__ = 70;
-            local_scalar_t__ sigma1(DUMMY_VAR__);
-            (void) sigma1;  // dummy to suppress unused var warning
-            stan::math::initialize(sigma1, DUMMY_VAR__);
-            stan::math::fill(sigma1, DUMMY_VAR__);
-            stan::math::assign(sigma1,sigma);
-            current_statement_begin__ = 71;
-            local_scalar_t__ sigma2(DUMMY_VAR__);
-            (void) sigma2;  // dummy to suppress unused var warning
-            stan::math::initialize(sigma2, DUMMY_VAR__);
-            stan::math::fill(sigma2, DUMMY_VAR__);
-            stan::math::assign(sigma2,sigma);
-            current_statement_begin__ = 74;
             lp_accum__.add(normal_log<propto__>(intercept, intercept_prior_mu, intercept_prior_sigma));
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 71;
             lp_accum__.add(normal_log<propto__>(slope, slope_prior_mu, slope_prior_sigma));
-            current_statement_begin__ = 76;
-            lp_accum__.add(inv_gamma_log<propto__>(sigma1, sigma_prior_alpha, sigma_prior_beta));
-            current_statement_begin__ = 77;
-            lp_accum__.add(inv_gamma_log<propto__>(sigma2, sigma_prior_alpha, sigma_prior_beta));
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 72;
+            lp_accum__.add(inv_gamma_log<propto__>(sigma, sigma_prior_alpha, sigma_prior_beta));
+            current_statement_begin__ = 73;
             lp_accum__.add(normal_log<propto__>(log2titers1, logtiter1mean, logtiter1sd));
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 75;
             for (int i = 1; i <= N; ++i) {
-                current_statement_begin__ = 83;
-                lp_accum__.add(normal_int_censored_likelihood(get_base1(lower_lims1, i, "lower_lims1", 1), get_base1(upper_lims1, i, "upper_lims1", 1), get_base1(log2titers1, i, "log2titers1", 1), sigma1, pstream__));
-                current_statement_begin__ = 91;
-                lp_accum__.add(normal_int_censored_likelihood(get_base1(lower_lims2, i, "lower_lims2", 1), get_base1(upper_lims2, i, "upper_lims2", 1), ((get_base1(log2titers1, i, "log2titers1", 1) * slope) + intercept), sigma2, pstream__));
-            }
+                current_statement_begin__ = 78;
+                lp_accum__.add(normal_int_censored_likelihood(get_base1(lower_lims1, i, "lower_lims1", 1), get_base1(upper_lims1, i, "upper_lims1", 1), get_base1(log2titers1, i, "log2titers1", 1), sigma, pstream__));
+                current_statement_begin__ = 86;
+                lp_accum__.add(normal_int_censored_likelihood(get_base1(lower_lims2, i, "lower_lims2", 1), get_base1(upper_lims2, i, "upper_lims2", 1), ((get_base1(log2titers1, i, "log2titers1", 1) * slope) + intercept), sigma, pstream__));
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
