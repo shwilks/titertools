@@ -23,7 +23,7 @@ log2diff <- function(
   titers2,
   ci_method = "HDI",
   ci_level = 0.95,
-  dilution_stepsize = 0,
+  dilution_stepsize = NA,
   mu_prior_mu = 0,
   mu_prior_sigma = 100,
   sigma_prior_alpha = 2,
@@ -35,6 +35,9 @@ log2diff <- function(
   if (!is.vector(titers1) || !is.vector(titers2) || length(titers1) != length(titers2)) {
     "Titers must be input as vectors of matching length"
   }
+
+  # Infer dilution stepsize if necessary
+  if (is.na(dilution_stepsize)) dilution_stepsize <- infer_dilution_stepsize(titers1)
 
   # Remove na titers
   na_titers <- is_na_titer(titers1) | is_na_titer(titers2)
