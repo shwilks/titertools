@@ -2,8 +2,8 @@ Package: titertools
 Title: A statistical toolkit for the annalysis of censored titration data
 Version: 0.0.0.9000
 Date: 2022-12-21
-Author: Sam Wilks
-Maintainer: Sam Wilks <sw463@cam.ac.uk>
+Author: S. H. Wilks
+Maintainer: S. H. Wilks <sw463@cam.ac.uk>
 Description: Provides a set of functions for statistical analysis of censored 
     data, in particular data such as titration data where there is typically 
     a detection threshold such as <10 titers.
