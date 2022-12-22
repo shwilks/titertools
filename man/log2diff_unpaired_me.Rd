@@ -2,13 +2,20 @@
 % Please edit documentation in R/foldchange.R
 \name{log2diff_unpaired_me}
 \alias{log2diff_unpaired_me}
-\title{Calculate the mean difference between two paired sets of titers}
+\title{Calculate the mean difference between two unpaired matrices of titers}
 \usage{
 log2diff_unpaired_me(
   titers1,
   titers2,
-  ci_method = "quap",
+  ci_method = "HDI",
   ci_level = 0.95,
+  dilution_stepsize = 0,
+  mu_prior_mu = 0,
+  mu_prior_sigma = 100,
+  sigma_prior_alpha = 2,
+  sigma_prior_beta = 5,
+  sigma_prior_ag_effect = 0.7,
+  sigma_prior_sr_effect = 2,
   options = list()
 )
 }
@@ -21,10 +28,27 @@ log2diff_unpaired_me(
 
 \item{ci_level}{The confidence level to use when calculating confidence intervals}
 
+\item{dilution_stepsize}{The dilution stepsize. Generally 1 for titers of
+the form '20', '40', '80', and 0 for titers that are read out continuously.}
+
+\item{mu_prior_mu}{Prior for the mean of the normal distribution to estimate the mean}
+
+\item{mu_prior_sigma}{Prior for the standard deviation of the normal distribution to estimate the mean}
+
+\item{sigma_prior_alpha}{Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation}
+
+\item{sigma_prior_beta}{Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation}
+
+\item{sigma_prior_ag_effect}{Prior for the antigen effect}
+
+\item{sigma_prior_sr_effect}{Prior for the serum effect}
+
 \item{options}{Options for the sampler}
 }
 \description{
 This function is useful for example for calculating differences where you have a set of
 pre-vaccination and post-vaccination samples and you would like to know the mean response
-size, accounting for non-detectable values.
+size, accounting for non-detectable values. The calculations take into account
+antigen reactivity biases (ag_effect) and reactivity biases for individual
+sera (sr_effect).
 }
