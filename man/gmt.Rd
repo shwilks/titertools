@@ -8,7 +8,7 @@ gmt(
   titers,
   ci_method = "HDI",
   ci_level = 0.95,
-  dilution_stepsize = 0,
+  dilution_stepsize = NA,
   mu_prior_mu = 0,
   mu_prior_sigma = 100,
   sigma_prior_alpha = 2,

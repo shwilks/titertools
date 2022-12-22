@@ -9,11 +9,14 @@ titerlm(
   titers2,
   ci_method = "HDI",
   ci_level = 0.95,
-  dilution_stepsize = 0,
-  mu_prior_mu = 0,
-  mu_prior_sigma = 100,
+  dilution_stepsize = NA,
+  intercept_prior_mu = 0,
+  intercept_prior_sigma = 10000,
+  slope_prior_mu = 0,
+  slope_prior_sigma = 10000,
   sigma_prior_alpha = 2,
   sigma_prior_beta = 5,
+  return_all_pars = FALSE,
   options = list()
 )
 }
@@ -29,15 +32,15 @@ titerlm(
 \item{dilution_stepsize}{The dilution stepsize. Generally 1 for titers of
 the form '20', '40', '80', and 0 for titers that are read out continuously.}
 
-\item{mu_prior_mu}{Prior for the mean of the normal distribution to estimate the mean}
-
-\item{mu_prior_sigma}{Prior for the standard deviation of the normal distribution to estimate the mean}
-
 \item{sigma_prior_alpha}{Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation}
 
 \item{sigma_prior_beta}{Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation}
 
 \item{options}{Options for the sampler}
+
+\item{mu_prior_mu}{Prior for the mean of the normal distribution to estimate the mean}
+
+\item{mu_prior_sigma}{Prior for the standard deviation of the normal distribution to estimate the mean}
 }
 \description{
 This function is useful for example for calculating differences where you have a set of
