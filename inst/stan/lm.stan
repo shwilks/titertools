@@ -41,7 +41,7 @@ model {
       lower_lims1[i],
       upper_lims1[i],
       log2titers1[i],
-      sigma1
+      sigma
     );
 
     // Calculate likelihood of the measurements 2 given log2titers1 and slope and intercept
@@ -49,7 +49,7 @@ model {
       lower_lims2[i],
       upper_lims2[i],
       log2titers1[i]*slope + intercept,
-      sigma2
+      sigma
     );
 
   }
