@@ -13,6 +13,7 @@
 #' the form '20', '40', '80', and 0 for titers that are read out continuously.
 #' @param mu_prior_mu Prior for the mean of the normal distribution to estimate the mean
 #' @param mu_prior_sigma Prior for the standard deviation of the normal distribution to estimate the mean
+#' @param sigma A fixed parameter for sigma, default is NA and a prior inverse gamma distribution distribution will be assumed based on sigma_prior_alpha and sigma_prior_beta
 #' @param sigma_prior_alpha Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation
 #' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
 #' @param options Options for the sampler
@@ -26,14 +27,23 @@ log2diff <- function(
   dilution_stepsize = NA,
   mu_prior_mu = 0,
   mu_prior_sigma = 100,
+  sigma = NA,
   sigma_prior_alpha = 2,
   sigma_prior_beta = 5,
   options = list()
   ) {
 
   # Check input
-  if (!is.vector(titers1) || !is.vector(titers2) || length(titers1) != length(titers2)) {
-    "Titers must be input as vectors of matching length"
+  if (!is.character(titers1) ||
+      !is.character(titers2) ||
+      !is.vector(titers1) ||
+      !is.vector(titers2)
+    ) {
+    stop("Titers must be input as character vectors")
+  }
+
+  if (length(titers1) != length(titers2)) {
+    stop("Titers inputs must be matching length")
   }
 
   # Infer dilution stepsize if necessary
@@ -76,17 +86,35 @@ log2diff <- function(
 
   # Set initial conditions
   initdata <- list(
-    mu = mean(titerdifflims$logtiter_diffs),
-    sigma = pmax(sd(titerdifflims$logtiter_diffs), 0.1, na.rm = T)
+    mu = mean(titerdifflims$logtiter_diffs)
   )
 
   # Optimize parameters
-  result <- rstan::optimizing(
-    stanmodels$gmt,
-    data = standata,
-    init = initdata,
-    hessian = TRUE
-  )
+  if (is.na(sigma)) {
+
+    # Where sigma is not fixed
+    initdata$sigma <- pmax(sd(titerdifflims$logtiter_diffs), 0.1, na.rm = T)
+
+    result <- rstan::optimizing(
+      stanmodels$gmt,
+      data = standata,
+      init = initdata,
+      hessian = TRUE
+    )
+
+  } else {
+
+    # Where sigma is fixed
+    standata$sigma <- sigma
+
+    result <- rstan::optimizing(
+      stanmodels$gmt_fixed_sigma,
+      data = standata,
+      init = initdata,
+      hessian = TRUE
+    )
+
+  }
 
   # Calculate output
   result <- calc_confint(
