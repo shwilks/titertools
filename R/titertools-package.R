@@ -12,6 +12,8 @@
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling
+#' @importFrom stats lm pnorm qnorm runif sd
+#' @importFrom magrittr %>%
 #'
 #' @references
 #' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.21.2. https://mc-stan.org
