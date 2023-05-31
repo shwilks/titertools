@@ -17,7 +17,8 @@
 #' @param sigma_prior_beta Prior for the beta parameter of the inverse gamma distribution to estimate the standard deviation
 #' @param options Options for the sampler
 #'
-#' @export
+#' @noRd
+#'
 titerlm <- function(
     titers1,
     titers2,
