@@ -17,6 +17,7 @@ RcppExport SEXP _rcpp_module_boot_stan_fit4gmt_fixed_sigma_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4gmt_me_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4lm_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4logdiff_unpaired_me_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4priors_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4sr_effects_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4sr_effects_fixed_sigma_mod();
 
@@ -26,6 +27,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4gmt_me_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4gmt_me_mod, 0},
     {"_rcpp_module_boot_stan_fit4lm_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4lm_mod, 0},
     {"_rcpp_module_boot_stan_fit4logdiff_unpaired_me_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4logdiff_unpaired_me_mod, 0},
+    {"_rcpp_module_boot_stan_fit4priors_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4priors_mod, 0},
     {"_rcpp_module_boot_stan_fit4sr_effects_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4sr_effects_mod, 0},
     {"_rcpp_module_boot_stan_fit4sr_effects_fixed_sigma_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4sr_effects_fixed_sigma_mod, 0},
     {NULL, NULL, 0}
