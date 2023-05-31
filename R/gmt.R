@@ -76,6 +76,16 @@ gmt <- function(
       hessian = TRUE
     )
 
+    result <- calc_confint(
+      result = result,
+      standata = standata,
+      model = stanmodels$gmt,
+      pars = names(result$par),
+      method = ci_method,
+      level = ci_level,
+      options = options
+    )
+
   } else {
 
     # Where sigma is fixed
@@ -88,17 +98,23 @@ gmt <- function(
       hessian = TRUE
     )
 
+    result <- calc_confint(
+      result = result,
+      standata = standata,
+      model = stanmodels$gmt_fixed_sigma,
+      pars = names(result$par),
+      method = ci_method,
+      level = ci_level,
+      options = options
+    )
+
   }
 
-  calc_confint(
-    result = result,
-    standata = standata,
-    model = stanmodels$gmt,
-    pars = names(result$par),
-    method = ci_method,
-    level = ci_level,
-    options = options
-  )
+  # Add attributes
+  attr(result, "dilution_stepsize") <- dilution_stepsize
+
+  # Return the result
+  result
 
 }
 
