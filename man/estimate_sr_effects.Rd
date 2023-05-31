@@ -11,6 +11,7 @@ estimate_sr_effects(
   dilution_stepsize = 0,
   ag_mean_prior_mean = 0,
   ag_mean_prior_sigma = 1000,
+  sigma = NA,
   sigma_prior_alpha = 2,
   sigma_prior_beta = 5,
   sigma_prior_sr_effect = 4,
@@ -30,6 +31,8 @@ the form '20', '40', '80', and 0 for titers that are read out continuously.}
 \item{ag_mean_prior_mean}{Prior for the mean parameter of the antigen mean values}
 
 \item{ag_mean_prior_sigma}{Prior for the standard deviation parameter of the antigen mean values}
+
+\item{sigma}{A fixed parameter for sigma, default is NA and a prior inverse gamma distribution distribution will be assumed based on sigma_prior_alpha and sigma_prior_beta}
 
 \item{sigma_prior_alpha}{Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation}
 

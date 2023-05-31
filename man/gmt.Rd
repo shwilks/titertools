@@ -11,6 +11,7 @@ gmt(
   dilution_stepsize = NA,
   mu_prior_mu = 0,
   mu_prior_sigma = 100,
+  sigma = NA,
   sigma_prior_alpha = 2,
   sigma_prior_beta = 5,
   options = list()
@@ -29,6 +30,8 @@ the form '20', '40', '80', and 0 for titers that are read out continuously.}
 \item{mu_prior_mu}{Prior for the mean of the normal distribution to estimate the mean}
 
 \item{mu_prior_sigma}{Prior for the standard deviation of the normal distribution to estimate the mean}
+
+\item{sigma}{A fixed parameter for sigma, default is NA and a prior inverse gamma distribution distribution will be assumed based on sigma_prior_alpha and sigma_prior_beta}
 
 \item{sigma_prior_alpha}{Prior for the alpha parameter of the inverse gamma distribution to estimate the standard deviation}
 
