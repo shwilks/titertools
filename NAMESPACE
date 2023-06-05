@@ -3,6 +3,7 @@
 export(estimate_sr_effects)
 export(gmt)
 export(gmt_me)
+export(impute_gmt_titers)
 export(log2diff)
 export(log2diff_me)
 export(log2diff_unpaired_me)

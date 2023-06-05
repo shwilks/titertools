@@ -31,6 +31,21 @@ impute_gmt_logtiters <- function(result, titers) {
 
 }
 
+#' Impute censored titers
+#'
+#' This function takes a vector of titers and imputes censored titers based on
+#' the results of a geometric mean titer estimate from the `impute_gmt_titers()`
+#' function. Censored titers are drawn from a censored normal distribution with
+#' mean and standard deviation parameters equal to those provided in the
+#' result argument.
+#'
+#' @param result Results from a titer GMT estimate from `impute_gmt_titers()`
+#' @param titers A vector of titers for which to impute censored cases
+#'
+#' @return Returns a vector of titers with imputed values in place of censored
+#'   cases.
+#' @export
+#'
 impute_gmt_titers <- function(result, titers) {
 
   log_titers <- impute_gmt_logtiters(result, titers)
