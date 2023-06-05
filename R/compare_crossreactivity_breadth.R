@@ -143,18 +143,18 @@ compare_crossreactivity_breadth <- function(
 
   # Reformat output
   slope_results <- output[grepl("sr_group_slopes", rownames(output)), , drop = F] |>
-    as_tibble(
+    tibble::as_tibble(
       rownames = "variable"
     ) |>
-    mutate(
+    dplyr::mutate(
       sr_group = sr_group_levels[-1]
     )
 
   ag_folddrop_results <- output[grepl("ag_folddrops", rownames(output)), , drop = F] |>
-    as_tibble(
+    tibble::as_tibble(
       rownames = "variable"
     ) |>
-    mutate(
+    dplyr::mutate(
       ag = levels(ag_matrix)
     )
 
