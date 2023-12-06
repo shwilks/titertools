@@ -1,6 +1,6 @@
 Package: titertools
 Title: A statistical toolkit for the annalysis of censored titration data
-Version: 0.0.0.9002
+Version: 0.0.0.9003
 Date: 2023-06-05
 Author: S. H. Wilks
 Maintainer: S. H. Wilks <sw463@cam.ac.uk>
@@ -16,13 +16,15 @@ Biarch: true
 Depends: 
     R (>= 3.4.0)
 Imports: 
+    bayestestR,
+    dplyr,
+    forcats,
+    magrittr,
     methods,
     Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
     rstan (>= 2.18.1),
-    bayestestR,
-    magrittr,
-    forcats,
-    dplyr,
+    rstantools (>= 2.3.1),
     tibble
 LinkingTo: 
     BH (>= 1.66.0),
